@@ -1,5 +1,5 @@
 Description: >
-    Chris Iregbu - Project 2 - Deploying a high availability web app using CloudFormation.
+    Chris Iregbu - Udagram Project - Deploying a high availability web app using CloudFormation.
 
     This template deploys a VPC, with a pair of public and private subnets spread across two Availability Zones.
     It deploys an internet gateway, with a default route on the public subnets. Also, it deploys a pair of NAT 
