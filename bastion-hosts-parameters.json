@@ -1,0 +1,22 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UdagramProject"
+	},
+    {
+        "ParameterKey": "BastionHostAMI",
+		"ParameterValue": "ami-083ac7c7ecf9bb9b0"
+    },
+    {
+        "ParameterKey": "BastionHostInstanceType",
+		"ParameterValue": "t3.micro"
+    },
+    {
+        "ParameterKey": "BastionHostKeyName",
+		"ParameterValue": "jumpbox-key"
+    },
+    {
+        "ParameterKey": "LocalHostIP",
+		"ParameterValue": "1.2.3.4/32"
+    }
+]

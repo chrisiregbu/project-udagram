@@ -1,0 +1,30 @@
+Description: >
+  Chris Iregbu
+Parameters:
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+  S3BucketName:
+    Description: Unique name of the S3 bucket where stores the files to deploy
+    Type: String
+    Default: s3-bucket
+
+Resources:
+    MyS3Bucket:
+      Type: 'AWS::S3::Bucket'
+      Properties:
+        # I specify that the string entered as the S3BucketName parameter should be used as the name of the bucket
+        BucketName: !Ref S3BucketName 
+
+Outputs: 
+  BucketName:
+    Value: !Ref MyS3Bucket
+    Description: Bucket that stores project web archive
+    Export:
+      Name: !Sub ${EnvironmentName}-DataBucket
+  DataBucketARN:
+    Value: !Join ["", ["arn:aws:s3:::", !Ref "MyS3Bucket", "/*"]]
+    Export:
+      Name: !Sub ${EnvironmentName}-DataBucketARN
