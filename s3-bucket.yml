@@ -12,19 +12,19 @@ Parameters:
     Default: s3-bucket
 
 Resources:
-    MyS3Bucket:
+    UdagramS3Bucket:
       Type: 'AWS::S3::Bucket'
       Properties:
-        # I specify that the string entered as the S3BucketName parameter should be used as the name of the bucket
+        # The string entered as the S3BucketName parameter should be used as the name of the bucket
         BucketName: !Ref S3BucketName 
 
 Outputs: 
   BucketName:
-    Value: !Ref MyS3Bucket
+    Value: !Ref UdagramS3Bucket
     Description: Bucket that stores project web archive
     Export:
       Name: !Sub ${EnvironmentName}-DataBucket
   DataBucketARN:
-    Value: !Join ["", ["arn:aws:s3:::", !Ref "MyS3Bucket", "/*"]]
+    Value: !Join ["", ["arn:aws:s3:::", !Ref "UdagramS3Bucket", "/*"]]
     Export:
       Name: !Sub ${EnvironmentName}-DataBucketARN

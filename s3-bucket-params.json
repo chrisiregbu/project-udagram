@@ -5,6 +5,6 @@
     },
 	{
 		"ParameterKey": "S3BucketName",
-		"ParameterValue": "latest-code-version"
+		"ParameterValue": "latest-code"
     }
 ]

@@ -1,8 +1,9 @@
 Description:
   Chris Iregbu - Udagram Project - Deploying a high availability Web App using CloudFormation.
 
-  This template deploys a load balanced, auto-scaling Web Application along with the necessary 
-  supporting software into its matching infrastructure.
+  This template deploys a Load balanced, AutoScaling Web Application along with the necessary 
+  supporting software into its matching infrastructure including Launch Configuration, health check,
+  Security groups, Listener and Target Group.
 
 # Optional part of the template
 Parameters:
@@ -42,7 +43,7 @@ Resources:
       Roles: 
         - !Ref UdacityS3ReadOnlyEC2
 
-  # Load balancer security group
+  # Load Balancer Security Group
   LBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -61,7 +62,7 @@ Resources:
           ToPort: 80
           CidrIp: 0.0.0.0/0 # allow 80 port to send outbound traffic
       
-  # Web server security group to allow http to our hosts and ssh from local
+  # Web server's Security Group to allow http to our hosts and ssh from local
   WebServerSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -80,6 +81,7 @@ Resources:
         ToPort: 65535
         CidrIp: 0.0.0.0/0  # allow all ports to send outbound traffic
   
+  # Launch the EC2 Instances - UserData scripts install all the required dependencies
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
@@ -92,7 +94,7 @@ Resources:
           systemctl enable httpd
           cd /var/www/html
           aws s3 cp s3://udacity-demo-1/udacity.zip .
-          unzip -o udacity.zip   
+          unzip -o udacity.zip
       ImageId: ami-083ac7c7ecf9bb9b0
       IamInstanceProfile: !Ref ProfileWithRolesForOurApp
       SecurityGroups:
@@ -115,8 +117,9 @@ Resources:
       MaxSize: '4'
       TargetGroupARNs:
       - Ref: WebAppTargetGroup
-  
-  WebAppLB: # defines load balancer's subnet location and security group
+
+  # Defines the Load Balancer's subnet location (the public Subnets) and Security Group
+  WebAppLB: 
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
@@ -124,8 +127,9 @@ Resources:
         - Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
       SecurityGroups:
         - Ref: LBSecGroup
-
-  Listener: # defines which port observes traffic from the internet
+  
+  # Listener for Load Balancer targeting WebAppTargetGroup and listening for HTTP traffic on port 80
+  Listener: 
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
@@ -136,21 +140,8 @@ Resources:
         Ref: WebAppLB
       Port: 80
       Protocol: HTTP
-  
-  # We define a default target group here, as this is a mandatory parameter
-  # when creating an Application Load Balancer Listener. This is not used, instead
-  # a target group is created per-service in each service template.
-  DefaultTargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Name: !Sub ${EnvironmentName}-default
-      VpcId: 
-        Fn::ImportValue:
-          Fn::Sub: "${EnvironmentName}-VPCID"
-      Port: 80
-      Protocol: HTTP
 
-  # Defines where to forward traffic 
+  # Listener Rule for Load Balancer forwarding traffic to the same group (WebAppTargetGroup) as the Listener
   ALBListenerRule:
       Type: AWS::ElasticLoadBalancingV2::ListenerRule
       Properties:
@@ -163,7 +154,7 @@ Resources:
         ListenerArn: !Ref Listener
         Priority: 1
 
-  # Load balancer health check
+  # Load Balancer Health Check using Port 80
   WebAppTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -180,12 +171,12 @@ Resources:
           Fn::Sub: "${EnvironmentName}-VPCID"
 
 Outputs:
-  WebsiteUrl:
-    Description: DNS name of the Web application via WebAppLB
-    Value: !GetAtt WebAppLB.DNSName
+  WebsiteUrl: 
+    Description: Load Balancer DNS Name for the Web application
+    Value:
+      !Join
+        - ''
+        - - 'http://'
+          - !GetAtt WebAppLB.DNSName
     Export:
       Name: !Sub ${EnvironmentName}-WEB-APP-URL
-
-  Listener:
-    Description: A reference to a port 80 listener
-    Value: !Ref Listener

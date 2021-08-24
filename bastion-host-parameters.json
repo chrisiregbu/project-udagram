@@ -1,0 +1,22 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UdagramProject"
+	},
+    {
+        "ParameterKey": "AMItoUse",
+		"ParameterValue": "ami-083ac7c7ecf9bb9b0"
+    },
+    {
+        "ParameterKey": "InstanceTypetoUse",
+		"ParameterValue": "t3.micro"
+    },
+    {
+        "ParameterKey": "BastionHostKeyName",
+		"ParameterValue": "jumpbox-key"
+    },
+    {
+        "ParameterKey": "RemoteAccessCIDR",
+		"ParameterValue": "1.2.3.4/32"
+    }
+]

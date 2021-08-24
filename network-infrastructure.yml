@@ -2,7 +2,7 @@ Description: >
     Chris Iregbu - Udagram Project - Deploying a high availability Web App using CloudFormation.
 
     This template deploys a VPC, with a pair of public and private subnets spread across two Availability Zones.
-    It deploys an internet gateway, with a default route on the public subnets. It also deploys a pair of NAT 
+    It deploys an internet gateway, with a default route on the public subnets. It then deploys a pair of NAT 
     gateways (one in each AZ), and default routes for them in the private subnets.
     
 Parameters:
